@@ -1,5 +1,5 @@
-# nest-scaffold
+# nest-dictionary-module
 
-A nest project template I usually use（我平时使用的 NestJS 项目模版）
+A dictionary management module（一个字典管理模块）
 
-See👀: []()
+See👀: [./src/dictionary/dictionary.module.ts](./src/dictionary/dictionary.module.ts)
