@@ -5,6 +5,7 @@ import { Dictionary } from './entities/dictionary.entity';
 import { UpdateDictionaryDto } from './dto/update-dictionary.dto';
 import { CreateDictionaryDto } from './dto/create-dictionary.dto';
 import { CheckDictionaryDto } from './dto/check-dictionary.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Injectable()
 export class DictionaryService {
@@ -12,6 +13,18 @@ export class DictionaryService {
     @InjectRepository(Dictionary)
     private readonly dictionaryRepository: Repository<Dictionary>,
   ) {}
+
+  async query(paginationDto: PaginationDto) {
+    const { page, size } = paginationDto;
+    const [records, total] = await this.dictionaryRepository.findAndCount({
+      skip: (page - 1) * size,
+      take: size,
+      order: { category: 'ASC', id: 'DESC', order: 'ASC' },
+      select: ['id', 'category', 'description', 'enable', 'key', 'value'],
+    });
+
+    return { records, page, size: size, total };
+  }
 
   findAllCategories() {
     return this.dictionaryRepository

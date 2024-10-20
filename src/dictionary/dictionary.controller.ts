@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -9,6 +10,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { DictionaryService } from './dictionary.service';
 import { UpdateDictionaryDto } from './dto/update-dictionary.dto';
@@ -19,9 +21,18 @@ import { CheckDictionaryDto } from './dto/check-dictionary.dto';
 export class DictionaryController {
   constructor(private readonly dictionaryService: DictionaryService) {}
 
+  // @Get()
+  // findAllCategories() {
+  //   return this.dictionaryService.findAllCategories();
+  // }
+
+  @HttpCode(200)
   @Get()
-  findAllCategories() {
-    return this.dictionaryService.findAllCategories();
+  query(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('size', new DefaultValuePipe(10), ParseIntPipe) size: number,
+  ) {
+    return this.dictionaryService.query({ page, size });
   }
 
   @Post()
