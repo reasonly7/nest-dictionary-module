@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Dictionary } from './entities/dictionary.entity';
 import { UpdateDictionaryDto } from './dto/update-dictionary.dto';
 import { CreateDictionaryDto } from './dto/create-dictionary.dto';
@@ -15,12 +15,20 @@ export class DictionaryService {
   ) {}
 
   async query(paginationDto: PaginationDto) {
-    const { page, size } = paginationDto;
+    const { page, size, category, description, enable, key, value } =
+      paginationDto;
     const [records, total] = await this.dictionaryRepository.findAndCount({
       skip: (page - 1) * size,
       take: size,
-      order: { category: 'ASC', id: 'DESC', order: 'ASC' },
+      order: { category: 'ASC', order: 'ASC' },
       select: ['id', 'category', 'description', 'enable', 'key', 'value'],
+      where: {
+        category: category && Like(`%${category}%`),
+        key: key && Like(`%${key}%`),
+        value: value && Like(`%${value}%`),
+        description: description && Like(`%${description}%`),
+        enable,
+      },
     });
 
     return { records, page, size: size, total };

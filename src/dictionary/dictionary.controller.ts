@@ -16,6 +16,7 @@ import { DictionaryService } from './dictionary.service';
 import { UpdateDictionaryDto } from './dto/update-dictionary.dto';
 import { CreateDictionaryDto } from './dto/create-dictionary.dto';
 import { CheckDictionaryDto } from './dto/check-dictionary.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Controller('dictionary')
 export class DictionaryController {
@@ -28,11 +29,18 @@ export class DictionaryController {
 
   @HttpCode(200)
   @Get()
-  query(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('size', new DefaultValuePipe(10), ParseIntPipe) size: number,
-  ) {
-    return this.dictionaryService.query({ page, size });
+  query(@Query() paginationDto: PaginationDto) {
+    const { page, size, category, description, enable, key, value } =
+      paginationDto;
+    return this.dictionaryService.query({
+      page: Number(page || 1),
+      size: Number(size || 10),
+      category: category || null,
+      description: description || null,
+      enable: enable !== undefined ? Boolean(Number(enable)) : null,
+      key: key || null,
+      value: value || null,
+    });
   }
 
   @Post()
