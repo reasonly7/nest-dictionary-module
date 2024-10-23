@@ -31,7 +31,7 @@ export class DictionaryService {
       },
     });
 
-    return { records, page, size: size, total };
+    return { records, page, size, total };
   }
 
   findAllCategories() {
